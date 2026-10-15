@@ -1,19 +1,31 @@
-# 学习通视频自动观看工具
+<h3 align="center">
+  <img src="icon.png" width="100" alt="Logo" style="border-radius: 15px;"/><br/>
+   ChaoXing_WebGUI
+</h3>
 
-当前目录就是可复用项目目录：`chaoxing_webgui`。
+<p align="center">
+  <i>曾经，人们将倍速达到可怜的极致，去追赶网课的终点；</i><br/>
+  <i>如今，网课不必追赶——</i><br/>
+  <i>它从代码与请求的碰撞中醒来，沿着我们铺下的线路行走；</i><br/>
+  <i>当日志在控制台中肆意生长</i><br/>
+  <i>在此，尽情感受您失而复得的自由</i><br/>
+</p>  
 
-## 快速启动
+## 快速上手  
+* 下载exe产物，双击运行 https://github.com/MrBZBZ/chaoxing_webgui/releases/download/1.0.0/ChaoxingWebGUI.exe  
+* 这时如果你打开了一个浏览器并且正常看到页面出现即成功启动
+## 你只需要提供两样东西
 
-网页版（推荐）：
+| 输入 | 从哪来                                                                                                                                |
+|---|------------------------------------------------------------------------------------------------------------------------------------|
+| **cookie** | 浏览器登录学习通后，在 Reqable 里任取一条 `mooc1.chaoxing.com` 请求，把请求头里的 `Cookie:` 整段复制，存成 `cookie.txt`（一行），这个东西是你的账号凭证，千万不要泄露，此脚本会使用这个凭证来自动完成课程任务 |
+| **studentstudy 链接** | 浏览器里打开课程后地址栏那条：`https://mooc1.chaoxing.com/mycourse/studentstudy?chapterId=...&courseId=...&clazzid=...&cpi=...` ，提供这个链接脚本才能解析课程信息 |
 
-```powershell
-python .\chaoxing_webui.py --port 8756 --open-browser
-```
+其余全自动：节点列表、`objectId / jobid / attDuration / attDurationEnc / otherInfo`、`dtoken`、签名 `enc`、时间戳。
 
-也可以双击 `start_webui.bat`。如果 `8756` 已被已有实例占用，不要重复启动；直接打开
-`http://127.0.0.1:8756/` 即可。
+> 如果只给 `--course-id/--clazz-id/--cpi` 也可以，其它参数同样会自动补齐（`userid` 取 cookie 的 `_uid`，`fid` 取 cookie 的 `fid`）。
 
-重新打包 exe：
+## 打包exe
 
 ```powershell
 python -m pip install -r .\requirements-build.txt
@@ -36,46 +48,6 @@ powershell -ExecutionPolicy Bypass -File .\build_exe.ps1
 | `archive/research/` | 历史抓包、逆向、验证材料，不参与运行 |
 
 ---
-
-以下为运行逻辑和参数说明。
-
-纯标准库（Python 3.8+，无需 pip 安装任何依赖）。给一个 `studentstudy` 链接和一份 cookie，
-即可自动列出整门课的全部视频任务点，并按服务端要求逐条上报直到 `isPassed = true`。
-
-## 0. 图形界面（推荐）
-
-**网页版（推荐，本机网页）：**
-
-```bash
-python chaoxing_webui.py --port 8756     # 然后浏览器打开 http://127.0.0.1:8756/
-```
-
-1. 粘贴 cookie + studentstudy 链接（可用 `webui_defaults.json` 预填）
-2. **打开页面会自动刷新一次状态列表**（可在界面里关掉）
-3. **开始全部未完成** → 依次做完所有未完成视频；**停止** 可随时中断（下次续做）
-4. **从选中开始继续** → 勾选某个（或几个）视频后点它：
-   先重跑勾选的视频（**即使显示“已完成”也会重跑**），再继续把它后面的未完成视频全部做完
-5. **重跑时起始方式**（下拉）：
-   - `续看`（默认）：从服务端记录的断点继续
-   - `从头`：从 0 开始重刷（对应命令行 `--restart`）
-6. 可设：上报间隔、速率（1.0 正常 / 2.0 双倍）、限时分钟；有进度条与 `进度 i / n`
-
-> 状态扫描是 **8 并发**的，全课程通常 ~5 秒完成；并且带去重守卫，同一时间重复触发会自动跳过（手动点“刷新状态”仍是强制刷新）。
-
-**桌面版（备选）：** 双击 `chaoxing_gui.py`。注意：若由后台/容器进程启动，窗口可能落在不可见桌面上，请自己双击运行。
-
-两个界面都只调用下面的命令行逻辑，完全等价。
-
-## 1. 你只需要提供两样东西
-
-| 输入 | 从哪来 |
-|---|---|
-| **cookie** | 浏览器登录学习通后，在 Reqable 里任取一条 `mooc1.chaoxing.com` 请求，把请求头里的 `Cookie:` 整段复制，存成 `cookie.txt`（一行） |
-| **studentstudy 链接** | 浏览器里打开课程后地址栏那条：`https://mooc1.chaoxing.com/mycourse/studentstudy?chapterId=...&courseId=...&clazzid=...&cpi=...` |
-
-其余全自动：节点列表、`objectId / jobid / attDuration / attDurationEnc / otherInfo`、`dtoken`、签名 `enc`、时间戳。
-
-> 如果只给 `--course-id/--clazz-id/--cpi` 也可以，其它参数同样会自动补齐（`userid` 取 cookie 的 `_uid`，`fid` 取 cookie 的 `fid`）。
 
 ## 2. 常用命令
 
