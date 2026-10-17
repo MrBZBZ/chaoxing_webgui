@@ -11,6 +11,8 @@
   <i>在此，尽情感受您失而复得的自由</i><br/>
 </p>  
 
+## 项目简介：  
+本项目是由LLM自主分析学习通课程观看过程中产生的发包及js脚本制作的自动化python工具，可以全自动的观看学习通网课
 ## 快速上手  
 * 下载exe产物，双击运行 https://github.com/MrBZBZ/chaoxing_webgui/releases/download/1.0.0/ChaoxingWebGUI.exe  
 * 这时如果你打开了一个浏览器并且正常看到页面出现即成功启动
